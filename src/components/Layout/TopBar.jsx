@@ -1,7 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Box } from "@mui/material";
 
-// Correspondance route → titre de page affiché dans la barre
 const pageTitles = {
   "/collection": "Collection",
   "/deck": "Mon Deck",
@@ -15,15 +14,12 @@ function TopBar() {
   return (
     <AppBar position="static">
       <Toolbar>
-        {/* Nom du jeu, style Gwent */}
         <Typography variant="h6" sx={{ color: "primary.main", fontFamily: "Georgia, serif" }}>
           GWENT
         </Typography>
 
-        {/* Séparateur doré */}
         <Box sx={{ mx: 1.5, color: "rgba(200, 168, 75, 0.4)", fontSize: "1.2rem" }}>|</Box>
 
-        {/* Titre de la page courante */}
         <Typography
           sx={{
             color: "text.secondary",

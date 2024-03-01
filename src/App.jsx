@@ -6,6 +6,7 @@ import { onAuthChange } from "./services/firebaseService";
 import LoginPage from "./pages/LoginPage";
 import CollectionPage from "./pages/CollectionPage";
 import DeckPage from "./pages/DeckPage";
+import BattlePage from "./pages/BattlePage";
 import BottomNav from "./components/Layout/BottomNav";
 import TopBar from "./components/Layout/TopBar";
 import { GameProvider } from "./contexts/GameContext";
@@ -49,6 +50,7 @@ function App() {
                 <Route path="/" element={<Navigate to="/collection" />} />
                 <Route path="/collection" element={<CollectionPage />} />
                 <Route path="/deck" element={<DeckPage />} />
+                <Route path="/battle" element={<BattlePage />} />
               </Routes>
             </Box>
             <BottomNav />

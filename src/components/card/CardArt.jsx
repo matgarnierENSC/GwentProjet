@@ -3,7 +3,6 @@ import { Box } from "@mui/material";
 const BASE = "https://gwent.one/image/gwent/assets/card";
 const RES = "high";
 
-// Affiche l'illustration de fond de la carte
 function CardArt({ artId }) {
   return (
     <Box

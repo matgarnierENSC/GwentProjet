@@ -75,7 +75,6 @@ function CollectionPage() {
 
   return (
     <Box sx={{ background: "linear-gradient(180deg, #020d02 0%, #0a1a0a 100%)", minHeight: "100vh" }}>
-      {/* Ligne dorée haut */}
       <Box
         sx={{
           height: "2px",

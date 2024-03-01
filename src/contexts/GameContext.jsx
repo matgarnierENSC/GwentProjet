@@ -1,9 +1,12 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 
-const GameContext = createContext({ enPartie: false });
+const GameContext = createContext({ enPartie: false, setEnPartie: () => {} });
 
 export function GameProvider({ children }) {
-  return <GameContext.Provider value={{ enPartie: false }}>{children}</GameContext.Provider>;
+  const [enPartie, setEnPartie] = useState(false);
+  return (
+    <GameContext.Provider value={{ enPartie, setEnPartie }}>{children}</GameContext.Provider>
+  );
 }
 
 export function useGameContext() {

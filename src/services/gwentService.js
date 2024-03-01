@@ -1,6 +1,5 @@
 const BASE_URL = "https://api.gwent.one";
 
-// remplace les caractères spéciaux par _ pour avoir des clés Firebase valides
 export function sanitizeCardKey(name) {
   return name.replace(/[^a-zA-Z0-9]/g, "_");
 }
@@ -12,7 +11,6 @@ export function getCards() {
   if (cardsCachePromise !== null) return cardsCachePromise;
 
   cardsCachePromise = (async () => {
-    console.log("APPEL API ET GÉNÉRATION DES STATS !");
     try {
       const response = await fetch(`${BASE_URL}/?key=data`);
       const json = await response.json();
@@ -30,9 +28,8 @@ export function getCards() {
       uniqueCards.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
 
       return uniqueCards;
-    } catch (error) {
+    } catch {
       cardsCachePromise = null;
-      console.error("Erreur lors de la récupération des cartes:", error);
       return [];
     }
   })();

@@ -21,7 +21,7 @@ function LoginPage() {
         overflow: "hidden",
       }}
     >
-      {/* Ligne verte en haut */}
+     
       <Box
         sx={{
           position: "absolute",
@@ -33,7 +33,7 @@ function LoginPage() {
         }}
       />
 
-      {/* Ligne verte en bas */}
+      
       <Box
         sx={{
           position: "absolute",

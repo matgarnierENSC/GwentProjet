@@ -1,7 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import GwentCard from "./GwentCard";
 
-// Carte interactive : gère le clic, l'effet hover et la bordure verte si dans le deck
 function CardItem({ card, onClick, isInDeck = false }) {
   return (
     <Box

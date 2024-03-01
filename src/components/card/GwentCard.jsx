@@ -7,7 +7,6 @@ function getFactionSlug(faction) {
   return faction?.toLowerCase().replace(" ", "_") || "neutral";
 }
 
-// Assemble les trois couches visuelles d'une carte Gwent
 function GwentCard({ card }) {
   const artId = card.id.art;
   const color = card.attributes.color?.toLowerCase() || "bronze";

@@ -1,12 +1,10 @@
 import { createTheme } from "@mui/material";
 
-// Palette inspirée du design officiel Gwent :
-// fond très sombre + accents or/sable + texte crème
 const theme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#c8a84b", // or Gwent
+      main: "#c8a84b",
     },
     secondary: {
       main: "#8b6914",

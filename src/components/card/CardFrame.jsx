@@ -1,11 +1,9 @@
-
 import { Box } from "@mui/material";
 
 const BASE = "https://gwent.one/image/gwent/assets/card";
 const RES = "high";
 const SX = { position: "absolute", width: "100%", height: "100%", top: 0, left: 0 };
 
-// Affiche les couches décoratives : bordure couleur, icônes faction, rareté
 function CardFrame({ color, faction, rarity }) {
   return (
     <>
