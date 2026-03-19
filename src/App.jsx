@@ -1,41 +1,31 @@
 import { useState, useEffect } from "react";
-import { getCards, getCardImage } from "./services/gwentService";
+import { onAuthChange } from "./services/firebaseService";
+import LoginPage from "./pages/LoginPage";
 
 function App() {
-  const [cards, setCards] = useState([]);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    getCards()
-      .then((data) => {
-        setCards(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
+    // Écoute si l'utilisateur est connecté ou non
+    const unsubscribe = onAuthChange((currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+    return () => unsubscribe();
   }, []);
 
   if (loading) return <p>Chargement...</p>;
-  if (error) return <p>Erreur : {error}</p>;
 
+  // Si pas connecté → page de login
+  if (!user) return <LoginPage />;
+
+  // Si connecté → app principale
   return (
     <div>
-      <h1>Cartes ({cards.length})</h1>
-      {cards.map((card) => (
-        <div key={card.id.card}>
-          <p>{card.name}</p>
-          <p>{card.attributes.faction} — {card.attributes.color}</p>
-          <img
-            src={getCardImage(card)}
-            alt={card.name}
-            width={100}
-            onError={(e) => (e.target.style.display = "none")}
-          />
-        </div>
-      ))}
+      <p>Connecté : {user.displayName}</p>
+      <p>Email : {user.email}</p>
+      <img src={user.photoURL} alt="avatar" width={50} />
     </div>
   );
 }
