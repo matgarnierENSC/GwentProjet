@@ -1,12 +1,8 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { Box } from "@mui/material";
-import { onAuthChange } from "./services/firebaseService";
+import { ThemeProvider, CssBaseline, Box, Typography, Button } from "@mui/material";
+import theme from "./theme";
+import { onAuthChange, logout } from "./services/firebaseService";
 import LoginPage from "./pages/LoginPage";
-import CollectionPage from "./pages/CollectionPage";
-import DeckPage from "./pages/DeckPage";
-import BattlePage from "./pages/BattlePage";
-import BottomNav from "./components/BottomNav";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -20,25 +16,46 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  if (loading) return <p>Chargement...</p>;
-
-  // Pas connecté → login
-  if (!user) return <LoginPage />;
-
-  // Connecté → app avec navigation
   return (
-    <BrowserRouter>
-      {/* padding bas pour que le contenu ne soit pas caché par la navbar */}
-      <Box sx={{ paddingBottom: "60px" }}>
-        <Routes>
-          <Route path="/" element={<Navigate to="/collection" />} />
-          <Route path="/collection" element={<CollectionPage />} />
-          <Route path="/deck" element={<DeckPage />} />
-          <Route path="/battle" element={<BattlePage />} />
-        </Routes>
-      </Box>
-      <BottomNav />
-    </BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+
+      {loading && (
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          height="100vh"
+          sx={{ color: "primary.main", fontFamily: "Georgia, serif" }}
+        >
+          Chargement...
+        </Box>
+      )}
+
+      {!loading && !user && <LoginPage />}
+
+      {!loading && user && (
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          height="100vh"
+          gap={2}
+        >
+          <Typography sx={{ color: "#c8a84b", fontFamily: "Georgia, serif" }}>
+            Connecté en tant que {user.displayName}
+          </Typography>
+          <Button
+            variant="outlined"
+            onClick={logout}
+            sx={{ color: "#c8a84b", borderColor: "#c8a84b" }}
+          >
+            Se déconnecter
+          </Button>
+        </Box>
+      )}
+    </ThemeProvider>
   );
 }
 
