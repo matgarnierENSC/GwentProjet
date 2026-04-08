@@ -3,6 +3,7 @@ import { ThemeProvider, CssBaseline, Box, Typography, Button } from "@mui/materi
 import theme from "./theme";
 import { onAuthChange, logout } from "./services/firebaseService";
 import LoginPage from "./pages/LoginPage";
+import loadingImg from "./img/loadingPageImg.png";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -23,12 +24,24 @@ function App() {
       {loading && (
         <Box
           display="flex"
+          flexDirection="column"
           alignItems="center"
           justifyContent="center"
           height="100vh"
-          sx={{ color: "primary.main", fontFamily: "Georgia, serif" }}
+          gap={2}
+          sx={{
+            background: "linear-gradient(180deg, #0d0d0d 0%, #1a1410 50%, #0d0d0d 100%)",
+          }}
         >
-          Chargement...
+          <Box
+            component="img"
+            src={loadingImg}
+            alt="Gwent loading"
+            sx={{ width: 280, borderRadius: 2, opacity: 0.9 }}
+          />
+          <Typography sx={{ color: "#c8a84b", fontFamily: "Georgia, serif", letterSpacing: "0.15em" }}>
+            Chargement...
+          </Typography>
         </Box>
       )}
 

@@ -1,6 +1,6 @@
-import { Button, Box, Typography } from "@mui/material";
+import { Button, Box } from "@mui/material";
 import { loginWithGoogle } from "../services/firebaseService";
-import heroImg from "../assets/hero.png";
+import loadingImg from "../img/loadingPageImg.png";
 
 function LoginPage() {
   function handleLogin() {
@@ -15,13 +15,13 @@ function LoginPage() {
         alignItems: "center",
         justifyContent: "center",
         minHeight: "100vh",
-        background: "linear-gradient(180deg, #0d0d0d 0%, #1a1410 50%, #0d0d0d 100%)",
+        background: "linear-gradient(180deg, #020d02 0%, #0a1f0a 50%, #020d02 100%)",
         gap: 3,
         position: "relative",
         overflow: "hidden",
       }}
     >
-      {/* Ligne dorée en haut */}
+      {/* Ligne verte en haut */}
       <Box
         sx={{
           position: "absolute",
@@ -33,7 +33,7 @@ function LoginPage() {
         }}
       />
 
-      {/* Ligne dorée en bas */}
+      {/* Ligne verte en bas */}
       <Box
         sx={{
           position: "absolute",
@@ -47,33 +47,10 @@ function LoginPage() {
 
       <Box
         component="img"
-        src={heroImg}
-        alt="Gwent logo"
-        sx={{ width: 120, height: 120, objectFit: "contain" }}
+        src={loadingImg}
+        alt="Gwent"
+        sx={{ width: 300, borderRadius: 2, opacity: 0.95 }}
       />
-
-      <Typography
-        variant="h4"
-        sx={{
-          color: "#c8a84b",
-          fontFamily: "Georgia, serif",
-          letterSpacing: "0.2em",
-          textTransform: "uppercase",
-        }}
-      >
-        Gwent
-      </Typography>
-
-      <Typography
-        sx={{
-          color: "#a89060",
-          letterSpacing: "0.12em",
-          fontSize: "0.9rem",
-          textTransform: "uppercase",
-        }}
-      >
-        Card Battle
-      </Typography>
 
       <Box
         sx={{
@@ -88,17 +65,19 @@ function LoginPage() {
         onClick={handleLogin}
         sx={{
           mt: 1,
-          color: "#c8a84b",
+          color: "#3db843",
           borderColor: "#c8a84b",
           letterSpacing: "0.1em",
           px: 4,
           py: 1.5,
           fontFamily: "Georgia, serif",
           textTransform: "uppercase",
+          textShadow: "0 0 8px #c8a84b, 0 0 2px #c8a84b",
           "&:hover": {
-            borderColor: "#e8d5a3",
-            color: "#e8d5a3",
-            backgroundColor: "rgba(200, 168, 75, 0.08)",
+            borderColor: "#3db843",
+            color: "#7ddd82",
+            backgroundColor: "rgba(61, 184, 67, 0.08)",
+            textShadow: "0 0 12px #c8a84b",
           },
         }}
       >
