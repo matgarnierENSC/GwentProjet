@@ -1,79 +1,93 @@
-import React, { useState, useEffect } from 'react';
-import CardItem from '../components/CardItem';
-export default function DeckPage() {
-  const [deck, setDeck] = useState([]);
-  const [deckName, setDeckName] = useState("Mon Super Deck");
+import { useState, useEffect } from "react";
+import { Typography, Box, CircularProgress, Chip } from "@mui/material";
+import { getCards, sanitizeCardKey } from "../services/gwentService";
+import {
+  getAllCardStats,
+  getCurrentUser,
+  getUserDeck,
+  saveUserDeck,
+} from "../services/firebaseService";
+import CardList from "../components/card/CardList";
 
- 
+function DeckPage() {
+  const [deckCards, setDeckCards] = useState([]);
+  const [deckKeys, setDeckKeys] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    setDeck([]); 
+    const loadDeck = async () => {
+      const user = getCurrentUser();
+      const savedDeckKeys = await getUserDeck(user.uid);
+
+      if (savedDeckKeys.length === 0) {
+        setLoading(false);
+        return;
+      }
+
+      const allCards = await getCards();
+      const allStats = await getAllCardStats();
+
+      const cards = allCards
+        .filter((card) => savedDeckKeys.includes(sanitizeCardKey(card.name)))
+        .map((card) => ({
+          ...card,
+          ...allStats[sanitizeCardKey(card.name)],
+        }));
+
+      setDeckCards(cards);
+      setDeckKeys(savedDeckKeys);
+      setLoading(false);
+    };
+
+    loadDeck();
   }, []);
 
-
-  const handleRemoveFromDeck = (cardToRemove) => {
-    
-    const cardIndex = deck.findIndex((c) => c.name === cardToRemove.name);
-    
-    if (cardIndex !== -1) {
-      
-      const newDeck = [...deck];
-      newDeck.splice(cardIndex, 1);
-      setDeck(newDeck);
-    }
+  const handleRemoveCard = async (card) => {
+    const user = getCurrentUser();
+    const cardKey = sanitizeCardKey(card.name);
+    const newDeckKeys = deckKeys.filter((key) => key !== cardKey);
+    const newDeckCards = deckCards.filter((c) => sanitizeCardKey(c.name) !== cardKey);
+    setDeckKeys(newDeckKeys);
+    setDeckCards(newDeckCards);
+    await saveUserDeck(user.uid, newDeckKeys);
   };
 
-  // Fonction pour sauvegarder le deck (à lier à Firebase plus tard)
-  const handleSaveDeck = () => {
-    console.log("Sauvegarde du deck dans la base de données :", deck);
-    alert("Deck sauvegardé avec succès !");
-    // saveUserDeck(userId, deck);
-  };
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" mt={4}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
-    <div className="deck-page" style={{ padding: "20px" }}>
-      <header className="deck-header" style={{ marginBottom: "30px" }}>
-        {/* Un champ pour renommer son deck */}
-        <input 
-          type="text" 
-          value={deckName} 
-          onChange={(e) => setDeckName(e.target.value)}
-          style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "10px" }}
+    <Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: 2,
+        }}
+      >
+        <Typography variant="h5">Mon Deck</Typography>
+        <Chip
+          label={`${deckCards.length}/10 cartes`}
+          color={deckCards.length === 10 ? "success" : "warning"}
         />
-        
-        {/* Statistiques rapides du deck */}
-        <div className="deck-stats" style={{ display: "flex", gap: "20px", marginBottom: "15px" }}>
-          <p><strong>Cartes :</strong> {deck.length} / 30</p>
-          <p><strong>Puissance moyenne :</strong> {
-            deck.length > 0 
-              ? Math.round(deck.reduce((acc, card) => acc + (card.atk || 0), 0) / deck.length) 
-              : 0
-          }</p>
-        </div>
+      </Box>
 
-        <button onClick={handleSaveDeck} style={{ padding: "10px 20px", cursor: "pointer" }}>
-          💾 Sauvegarder le deck
-        </button>
-      </header>
-
-      {/* Affichage des cartes du deck */}
-      {deck.length === 0 ? (
-        <p>Votre deck est vide. Allez dans la Collection pour ajouter des cartes !</p>
+      {deckCards.length === 0 ? (
+        <Box sx={{ textAlign: "center", mt: 4 }}>
+          <Typography color="text.secondary">
+            Deck vide. Allez dans la Collection pour ajouter des cartes !
+          </Typography>
+        </Box>
       ) : (
-        <div className="cards-grid" style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
-          {deck.map((card, index) => (
-            <div key={index} className="deck-card-wrapper">
-              <CardItem 
-                card={card} 
-                // Cette fois, le clic retire la carte !
-                onClick={handleRemoveFromDeck} 
-              />
-              <p style={{ textAlign: "center", color: "red", fontSize: "12px", cursor: "pointer" }} onClick={() => handleRemoveFromDeck(card)}>
-                ❌ Retirer
-              </p>
-            </div>
-          ))}
-        </div>
+        <CardList cards={deckCards} onCardClick={handleRemoveCard} />
       )}
-    </div>
+    </Box>
   );
 }
+
+export default DeckPage;

@@ -1,16 +1,16 @@
 const BASE_URL = "https://api.gwent.one";
 
-// On stocke la requête elle-même (la Promesse), pas juste les données.
+// remplace les caractères spéciaux par _ pour avoir des clés Firebase valides
+export function sanitizeCardKey(name) {
+  return name.replace(/[^a-zA-Z0-9]/g, "_");
+}
+
+
 let cardsCachePromise = null;
 
 export function getCards() {
-  // Si une requête a déjà été lancée (même si elle n'est pas encore finie), 
-  // on renvoie exactement la même pour éviter les doublons.
-  if (cardsCachePromise !== null) {
-    return cardsCachePromise;
-  }
+  if (cardsCachePromise !== null) return cardsCachePromise;
 
-  // Sinon, on lance le travail et on le stocke IMMÉDIATEMENT
   cardsCachePromise = (async () => {
     console.log("APPEL API ET GÉNÉRATION DES STATS !");
     try {
@@ -19,34 +19,19 @@ export function getCards() {
       const allCards = Object.values(json.response);
 
       const units = allCards.filter((card) => card.attributes?.type === "Unit");
-      
+
       const seen = new Set();
       const uniqueCards = units.filter((card) => {
-        const identifier = card.name; 
-        if (seen.has(identifier)) return false;
-        seen.add(identifier);
+        if (seen.has(card.name)) return false;
+        seen.add(card.name);
         return true;
       });
 
-      // Tri alphabétique strict
-      uniqueCards.sort((a, b) => {
-        const nameA = a.name || "";
-        const nameB = b.name || "";
-        return nameA.localeCompare(nameB);
-      });
+      uniqueCards.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
 
-      // Génération des stats définitives
-      return uniqueCards.map(card => {
-        const stats = generateCardStats();
-        return {
-          ...card,
-          atk: stats.atk,
-          def: stats.def
-        };
-      });
+      return uniqueCards;
     } catch (error) {
-      // En cas d'erreur réseau, on vide le cache pour pouvoir réessayer plus tard
-      cardsCachePromise = null; 
+      cardsCachePromise = null;
       console.error("Erreur lors de la récupération des cartes:", error);
       return [];
     }

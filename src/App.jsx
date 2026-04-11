@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
-import { ThemeProvider, CssBaseline, Box, Typography, Button } from "@mui/material";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ThemeProvider, CssBaseline, Box } from "@mui/material";
 import theme from "./theme";
-import { onAuthChange, logout } from "./services/firebaseService";
+import { onAuthChange } from "./services/firebaseService";
 import LoginPage from "./pages/LoginPage";
-import loadingImg from "./img/loadingPageImg.png";
+import CollectionPage from "./pages/CollectionPage";
+import DeckPage from "./pages/DeckPage";
+import BottomNav from "./components/Layout/BottomNav";
+import TopBar from "./components/Layout/TopBar";
+import { GameProvider } from "./contexts/GameContext";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -24,49 +29,31 @@ function App() {
       {loading && (
         <Box
           display="flex"
-          flexDirection="column"
           alignItems="center"
           justifyContent="center"
           height="100vh"
-          gap={2}
-          sx={{
-            background: "linear-gradient(180deg, #0d0d0d 0%, #1a1410 50%, #0d0d0d 100%)",
-          }}
+          sx={{ color: "primary.main", fontFamily: "Georgia, serif", letterSpacing: "0.1em" }}
         >
-          <Box
-            component="img"
-            src={loadingImg}
-            alt="Gwent loading"
-            sx={{ width: 280, borderRadius: 2, opacity: 0.9 }}
-          />
-          <Typography sx={{ color: "#c8a84b", fontFamily: "Georgia, serif", letterSpacing: "0.15em" }}>
-            Chargement...
-          </Typography>
+          Chargement...
         </Box>
       )}
 
       {!loading && !user && <LoginPage />}
 
       {!loading && user && (
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          height="100vh"
-          gap={2}
-        >
-          <Typography sx={{ color: "#c8a84b", fontFamily: "Georgia, serif" }}>
-            Connecté en tant que {user.displayName}
-          </Typography>
-          <Button
-            variant="outlined"
-            onClick={logout}
-            sx={{ color: "#c8a84b", borderColor: "#c8a84b" }}
-          >
-            Se déconnecter
-          </Button>
-        </Box>
+        <BrowserRouter>
+          <GameProvider>
+            <TopBar />
+            <Box sx={{ paddingBottom: "60px", minHeight: "calc(100vh - 64px)" }}>
+              <Routes>
+                <Route path="/" element={<Navigate to="/collection" />} />
+                <Route path="/collection" element={<CollectionPage />} />
+                <Route path="/deck" element={<DeckPage />} />
+              </Routes>
+            </Box>
+            <BottomNav />
+          </GameProvider>
+        </BrowserRouter>
       )}
     </ThemeProvider>
   );
