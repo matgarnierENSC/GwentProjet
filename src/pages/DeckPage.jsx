@@ -55,32 +55,69 @@ function DeckPage() {
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" mt={4}>
-        <CircularProgress />
+        <CircularProgress sx={{ color: "#c8a84b" }} />
       </Box>
     );
   }
 
   return (
-    <Box>
+    <Box sx={{ background: "linear-gradient(180deg, #020d02 0%, #0a1a0a 100%)", minHeight: "100vh" }}>
+      {/* Ligne dorée haut */}
       <Box
         sx={{
+          height: "2px",
+          background: "linear-gradient(90deg, transparent, #c8a84b, transparent)",
+        }}
+      />
+
+      <Box
+        sx={{
+          position: "sticky",
+          top: 0,
+          zIndex: 100,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           padding: 2,
+          backgroundColor: "#020d02",
+          borderBottom: "1px solid rgba(200, 168, 75, 0.3)",
         }}
       >
-        <Typography variant="h5">Mon Deck</Typography>
+        <Typography
+          variant="h6"
+          sx={{ color: "#c8a84b", fontFamily: "Georgia, serif", letterSpacing: "0.15em" }}
+        >
+          MON DECK
+        </Typography>
         <Chip
-          label={`${deckCards.length}/10 cartes`}
-          color={deckCards.length === 10 ? "success" : "warning"}
+          label={`${deckCards.length} / 10`}
+          sx={{
+            fontFamily: "Georgia, serif",
+            letterSpacing: "0.05em",
+            color: deckCards.length === 10 ? "#3db843" : "#c8a84b",
+            borderColor: deckCards.length === 10 ? "#3db843" : "#c8a84b",
+            backgroundColor: "transparent",
+            border: "1px solid",
+            textShadow: deckCards.length === 10 ? "0 0 8px #3db843" : "0 0 6px #c8a84b",
+          }}
         />
       </Box>
 
       {deckCards.length === 0 ? (
-        <Box sx={{ textAlign: "center", mt: 4 }}>
-          <Typography color="text.secondary">
-            Deck vide. Allez dans la Collection pour ajouter des cartes !
+        <Box sx={{ textAlign: "center", mt: 8, px: 3 }}>
+          <Box
+            sx={{
+              width: 60,
+              height: "1px",
+              background: "linear-gradient(90deg, transparent, #c8a84b, transparent)",
+              mx: "auto",
+              mb: 2,
+            }}
+          />
+          <Typography
+            sx={{ color: "#a89060", fontFamily: "Georgia, serif", letterSpacing: "0.05em" }}
+          >
+            Deck vide — ajoutez des cartes depuis la Collection.
           </Typography>
         </Box>
       ) : (
